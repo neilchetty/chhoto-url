@@ -21,7 +21,7 @@ You can use the [provided compose file](./compose.yaml) as a base, modifying it 
 docker compose up -d
 ```
 
-If you're using a custom location for the `CHHOTO_DB_URL`, and using WAL mode, make sure to mount a whole
+If you're using a custom location for the [`CHHOTO_DB_URL`](#chhoto_db_url), and using WAL mode, make sure to mount a whole
 directory instead of a folder. If this is not done, there will be a low, but non-zero chance of data corruption.
 
 It should be possible to run Chhoto URL with pretty much anything that supports OCI images e.g. `docker`, `podman quadlets`
@@ -75,21 +75,30 @@ that's what I use for testing. A sample file for podman quadlets is provided at
 ## Configuration options
 
 All the configuration is done using environmental variables. Here's a link of all supported ones. Please take
-a look at the ones marked with a `#` as those are important, especially [`CHHOTO_SQLITE_USE_WAL_MODE`](#CHHOTO_SQLITE_USE_WAL_MODE-).
+a look at the ones marked with a `#` as those are important, especially [`CHHOTO_SQLITE_USE_WAL_MODE`](#chhoto_sqlite_use_wal_mode).
 
+<!-- prettier-ignore-start -->
+<a id="chhoto_db_url"></a>
 ### `CHHOTO_DB_URL` \#
+<!-- prettier-ignore-end -->
 
-Location for the database file. Take a look at [`CHHOTO_SQLITE_USE_WAL_MODE`](#CHHOTO_SQLITE_USE_WAL_MODE-) before you change it. Defaults to
+Location for the database file. Take a look at [`CHHOTO_SQLITE_USE_WAL_MODE`](#chhoto_sqlite_use_wal_mode) before you change it. Defaults to
 `urls.sqlite`. It is highly recommended that you mount a named volume or directory at a location like `/data` and
-use something like `/data/urls.sqlite` as `CHHOTO_DB_URL`.
+use something like `/data/urls.sqlite` here.
 (Of course, the actual names being used don't really matter.)
 
+<!-- prettier-ignore-start -->
+<a id="chhoto_password"></a>
 ### `CHHOTO_PASSWORD` \#
+<!-- prettier-ignore-end -->
 
 Provide a secure password. If kept empty, anyone can access the website. Note that password is not encrypted in
 transport, so it's recommended to use a reverse proxy like `caddy` or `nginx`.
 
+<!-- prettier-ignore-start -->
+<a id="chhoto_site_url"></a>
 ### `CHHOTO_SITE_URL` \#
+<!-- prettier-ignore-end -->
 
 Change this to your public-facing URL. This is optional, as the link will work at any URL as long as Chhoto URL
 is accessible there. This mostly enhances the frontend experience, as copying to clipboard, QR code generation will
@@ -107,7 +116,10 @@ Example Linux command for generating a secure API key: `tr -dc A-Za-z0-9 </dev/u
 If no API key is provided, the website will still work, but it'll be a significantly worse experience if you try
 to use Chhoto URL from the CLI.
 
+<!-- prettier-ignore-start -->
+<a id="chhoto_sqlite_use_wal_mode"></a>
 ### `CHHOTO_SQLITE_USE_WAL_MODE` \#
+<!-- prettier-ignore-end -->
 
 If set to `True`, enables [`WAL` journal mode](https://sqlite.org/wal.html). Any other value is ignored.
 It's highly recommended that you enable it, but make sure that you mount either a whole directory, or a named
@@ -120,7 +132,7 @@ Also, automated backups of the database will be enabled. Otherwise, `DELETE` jou
 used instead.
 
 In both cases, we have full ACID compliance, but it does cost a bit of performance. If you expect to see high throughput (in the
-order of hundreds of read/writes per second), take a look at the `CHHOTO_SQLITE_ENSURE_ACID` configuration option.
+order of hundreds of read/writes per second), take a look at the [`CHHOTO_SQLITE_ENSURE_ACID`](#chhoto_sqlite_ensure_acid) configuration option.
 
 ### `CHHOTO_SQLITE_ENSURE_ACID`
 
@@ -135,7 +147,10 @@ _Note: There might be partial data loss only in case of system failure or power 
 crashes. If you do have data loss, you should only lose the data stored after the last sync with the database file. So, under normal
 loads, you shouldn't lose any data anyway. But this is a real thing that can technically happen._
 
+<!-- prettier-ignore-start -->
+<a id="chhoto_redirect_method"></a>
 ### `CHHOTO_REDIRECT_METHOD` \#
+<!-- prettier-ignore-end -->
 
 Sets which redirection is used when a shortlink is resolved.
 
@@ -153,14 +168,14 @@ generated slug is used.
 ### `CHHOTO_SLUG_LENGTH`
 
 If UID slugs are enabled, the length of the slug can be set using this. A minimum of 4 is supported, and it defaults to 16.
-If you intend to have more than a few thousand shortlinks, it's strongly recommended that you use the UID `CHHOTO_SLUG_STYLE` with
-a `CHHOTO_SLUG_LENGTH` of 16 or more.
+If you intend to have more than a few thousand shortlinks, it's strongly recommended that you use the UID
+[`CHHOTO_SLUG_STYLE`](#chhoto_slug_style) with a [`CHHOTO_SLUG_LENGTH`](#chhoto_slug_length) of 16 or more.
 
 ### `CHHOTO_TRY_LONGER_SLUG`
 
 If you do choose to use a short UID despite anticipating collisions, it's recommended that you set this to `True`.
 In the event of a collision, this variable will result in a single retry attempt using a UID four digits longer than
-`CHHOTO_SLUG_LENGTH`. It has no effect for adjective-name slugs.
+[`CHHOTO_SLUG_LENGTH`](#chhoto_slug_length). It has no effect for adjective-name slugs.
 
 _Note: If not set, one retry will be attempted, just like adjective-name slugs. But it would use the same slug length._
 
@@ -169,8 +184,8 @@ _Note: If not set, one retry will be attempted, just like adjective-name slugs. 
 The address Chhoto URL will bind to. Defaults to `0.0.0.0`.
 
 Take a look at [this page](https://docs.rs/actix-web/4.11.0/actix_web/struct.HttpServer.html#method.bind)
-for supported values and potential consequences. Changing `CHHOTO_LISTEN_ADDRESS` is not recommended if
-using docker.
+for supported values and potential consequences. Changing [`CHHOTO_LISTEN_ADDRESS`](#chhoto_listen_address) is not
+recommended if using docker.
 
 ### `CHHOTO_LISTEN_PORT`
 
@@ -178,12 +193,15 @@ The port Chhoto URL will listen to. Defaults to `4567`.
 
 ### `CHHOTO_ALLOW_CAPITAL_LETTERS`
 
-If you want to use capital letters in the shortlink, set the `CHHOTO_ALLOW_CAPITAL_LETTERS` variable to `True`. Any other
-value is ignored.
+If you want to use capital letters in the shortlink, set the [`CHHOTO_ALLOW_CAPITAL_LETTERS`](#chhoto_allow_capital_letters)
+variable to `True`. Any other value is ignored.
 
 This will also allow capital letters in UID slugs, if those are enabled. It has no effect for adjective-name slugs.
 
+<!-- prettier-ignore-start -->
+<a id="chhoto_hash_algorithm"></a>
 ### `CHHOTO_HASH_ALGORITHM` \#
+<!-- prettier-ignore-end -->
 
 If you want to provided hashed password and API Key, name a supported algorithm here. For now, the supported
 values are: `Argon2`. More algorithms may be added later. Unsupported values are ignored.
@@ -202,14 +220,15 @@ You may also use online tools for this step.
 
 ### `CHHOTO_PUBLIC_MODE`
 
-To enable public mode, set `CHHOTO_PUBLIC_MODE` to `Enable`. With this, anyone will be able to add
+To enable public mode, set [`CHHOTO_PUBLIC_MODE`](#chhoto_public_mode) to `Enable`. With this, anyone will be able to add
 links. Listing existing links or deleting links will need admin access using the password. Any other values are
 ignored.
 
 ### `CHHOTO_PUBLIC_MODE_EXPIRY_DELAY`
 
-If `CHHOTO_PUBLIC_MODE` is enabled, and `CHHOTO_PUBLIC_MODE_EXPIRY_DELAY` is set to a positive value, submitted links
-will expire in that given time (in seconds). The user can still choose a shorter expiry delay.
+If [`CHHOTO_PUBLIC_MODE`](#chhoto_public_mode) is enabled, and [`CHHOTO_PUBLIC_MODE_EXPIRY_DELAY`](#chhoto_public_mode_expiry_delay)
+is set to a positive value, submitted links will expire in that given time (in seconds). The user can still
+choose a shorter expiry delay.
 
 It will have no effect for a logged in user i.e. the admin.
 

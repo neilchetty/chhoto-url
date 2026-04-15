@@ -15,8 +15,9 @@ get the siteurl using `curl http://localhost:4567/api/siteurl`. These routes are
 
 **This is required for programs that rely on a JSON response from Chhoto URL**
 
-In order to use API key validation, set the `CHHOTO_API_KEY` environment variable. If this is not set, the API will default to cookie
-validation (see section above). If the API key is insecure, a warning will be outputted along with a generated API key which may be used.
+In order to use API key validation, set the [`CHHOTO_API_KEY`](./INSTALLATION.md#chhoto_api_key) environment variable. If this is not set,
+the API will default to cookie validation (see section above). If the API key is insecure, a warning will be outputted along with a generated
+API key which may be used.
 
 **All responses for requests using API key are JSON encoded.**
 
@@ -165,7 +166,7 @@ or
 
 (This route is not accessible using cookie validation.)
 
-#### `/api/all?`
+#### `/api/all?{params}`
 
 To get a list of all the currently available links:
 
@@ -209,8 +210,8 @@ request, please add `-b cookie.txt` to provide authentication. Unless specified,
 
 ## Disable authentication
 
-If you do not define a `CHHOTO_PASSWORD` environment variable when starting the docker image, authentication
-will be disabled.
+If you do not define a [`CHHOTO_PASSWORD`](./INSTALLATION.md#chhoto_password) environment variable when starting the docker
+image, authentication will be disabled.
 
 This if not recommended in actual use however, as it will allow anyone to create new links and delete
 old ones. This might not seem like a bad idea, until you have hundreds of links
