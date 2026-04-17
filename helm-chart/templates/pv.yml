@@ -10,4 +10,4 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: {{ .Values.persistence.hostPath.path }}
+    path: { { .Values.persistence.hostPath.path } }

@@ -29,6 +29,7 @@ allow_capital_letters: False
 # cache_control_header: "no-cache, private"
 use_wal_mode: True
 # ensure_acid: False
+frontend_page_size: 10
 
 protocol: https
 fqdn: your.short.link.url.com
