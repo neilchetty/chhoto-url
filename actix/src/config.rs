@@ -8,17 +8,16 @@ use std::env::{var, VarError};
 use crate::auth;
 
 fn read_config_wrapper(new_name: &str, old_name: &str) -> Result<String, VarError> {
-    // This is needed to support old variable names.
-    // Might be deprecated at a later point.
-    var(new_name).or_else(|e| match e {
-        VarError::NotPresent => var(old_name).inspect(|_| {
+    var(new_name)
+        .ok()
+        .filter(|s| !s.trim().is_empty())
+        .ok_or(VarError::NotPresent)
+        .or_else(|_| var(old_name).inspect(|_| {
             warn!(
                 "Variable {new_name} was not found, falling back to reading variable {old_name}."
             );
             warn!("Please consider updating your configs.");
-        }),
-        _ => Err(e),
-    })
+        }))
 }
 
 // Struct for storing config read form env vars that might be accessed more than once
